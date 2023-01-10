@@ -14,7 +14,7 @@ function htmlDecode(input) {
   return doc.documentElement.textContent;
 }
 
-///APPEL API///
+///URL API///
 const musicAPI =
   "https://opentdb.com/api.php?amount=1&category=12&difficulty=medium&type=multiple";
 const geoAPI =
@@ -26,6 +26,7 @@ const sportAPI =
 
 const APIArray = [musicAPI, geoAPI, historyAPI, sportAPI];
 
+///APPEL API///
 const callAPI = async () => {
   const response = await fetch(
     APIArray[Math.floor(Math.random() * APIArray.length)]
@@ -33,8 +34,6 @@ const callAPI = async () => {
   const responseJSON = await response.json();
   return responseJSON.results;
 };
-
-///APPEL API///
 
 // const buttonElement = document.querySelectorAll('button');
 let score = 0;
@@ -109,12 +108,11 @@ function answerDistribution(answerList) {
 
 async function newQuestion() {
   catImgElement.src = "./images/images theme/loading.jpg";
-  questionTextElement.innerHTML = "LOADING QUESTION....."
+  questionTextElement.innerHTML = "LOADING QUESTION.....";
   //RESET
   reset();
   //Choose a random question
-  chosenQuestion = await callAPI();
-  chosenQuestion = chosenQuestion[0];
+  [chosenQuestion] = await callAPI();
   //Associate img with category
   imgCatAssociation(chosenQuestion.category);
 
@@ -147,18 +145,14 @@ function reset() {
 
 function pickAnswerCallback(e) {
   if (e.target.innerHTML !== htmlDecode(chosenQuestion.correct_answer)) {
-    console.log("bad answer");
     e.target.classList.add("wrong-answer");
     buttonAnswerElement.forEach((elt) => {
       if (elt.innerHTML === htmlDecode(chosenQuestion.correct_answer)) {
-        console.log('adding green on good answer')
         elt.classList.add("good-answer");
       }
     });
     looseLife();
-    console.log(lives);
   } else {
-    console.log("good answer");
     e.target.classList.add("good-answer");
     score++;
   }
@@ -171,7 +165,6 @@ function pickAnswerCallback(e) {
 }
 
 /* --------------- START QUESTION --------------*/
-
 
 /* --------------- SELECT ANSWER --------------*/
 
@@ -213,5 +206,3 @@ function looseLife() {
     );
   }
 }
-
-
